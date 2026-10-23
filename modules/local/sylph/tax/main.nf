@@ -2,9 +2,9 @@ process SYLPH_TAX {
     tag "SYLPH_TAX"
     label 'process_low'
     conda "${moduleDir}/environment.yml"
-    container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
-        'https://depot.galaxyproject.org/singularity/sylph-tax:1.8.0--pyhdfd78af_0' :
-        'biocontainers/sylph-tax:1.8.0--pyhdfd78af_0' }"
+    container "${workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container
+        ? 'https://depot.galaxyproject.org/singularity/sylph-tax:1.8.0--pyhdfd78af_0'
+        : 'biocontainers/sylph-tax:1.8.0--pyhdfd78af_0'}"
 
     input:
     tuple val(meta), path(sylph_profile)
@@ -12,8 +12,8 @@ process SYLPH_TAX {
     val database_name
 
     output:
-    tuple val(meta), path("*.sylphmpa") , optional: true , emit: sylph_tax
-    path "versions.yml"                 , emit: versions
+    tuple val(meta), path("*.sylphmpa"), optional: true, emit: sylph_tax
+    path "versions.yml", emit: versions
 
     when:
     task.ext.when == null || task.ext.when
@@ -25,10 +25,10 @@ process SYLPH_TAX {
     """
     sylph-tax \\
         --no-config \\
-        --taxonomy-dir $database \\
+        --taxonomy-dir ${database} \\
         taxprof \\
-        $sylph_profile \\
-        -t $database_name \\
+        ${sylph_profile} \\
+        -t ${database_name} \\
         -o ${prefix}_sylph_tax.sylphmpa
 
     cat <<-END_VERSIONS > versions.yml

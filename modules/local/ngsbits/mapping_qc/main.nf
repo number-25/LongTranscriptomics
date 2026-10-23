@@ -1,39 +1,39 @@
 process NGS_BITS {
-    tag "$meta.id"
+    tag "${meta.id}"
     label 'process_medium'
     conda "${moduleDir}/environment.yml"
-    container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
-        'https://depot.galaxyproject.org/singularity/ngs-bits:2025_01--py313h6fdbb3c_0':
-        'benekenobi/ngs-bits:2025_01' }"
+    container "${workflow.containerEngine in ['singularity', 'apptainer'] && !task.ext.singularity_pull_docker_container
+        ? 'https://depot.galaxyproject.org/singularity/ngs-bits:ngs-bits:2026_06--h174dc9b_0'
+        : 'quay.io/biocontainers/ngs-bits:2026_06--h174dc9b_0'}"
 
     input:
     tuple val(meta), path(bam), path(index)
-    path genome_fasta
+    tuple path(genome_fasta), path(genome_fasta_index)
     val build
     val contamination
 
     output:
-    tuple val(meta), path("*.qcML"),    emit: qcML
-    path "versions.yml",                emit: versions
+    tuple val(meta), path("*.qcML"), emit: qcML
+    path "versions.yml", emit: versions
 
     when:
     task.ext.when == null || task.ext.when
 
     script:
     //def args            = task.ext.args ?: ''
-    def contamination_type      = task.ext.contamination ?: "-no_cont"
+    def contamination_type = task.ext.contamination ?: "-no_cont"
     //def genome_build            = task.ext.genome_build ?: "$build"
-    def prefix              = task.ext.prefix ?: "${meta.id}_${meta.replicate}_ngsbits"
+    def prefix = task.ext.prefix ?: "${meta.id}_${meta.replicate}_ngsbits"
 
     // -build $genome_build
     """
     MappingQC \\
-        -in $bam \\
+        -in ${bam} \\
         -out ${prefix}.qcML \\
         -rna \\
-        -ref $genome_fasta \\
+        -ref ${genome_fasta} \\
         -long_read \\
-        $contamination_type
+        ${contamination_type}
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":
@@ -45,7 +45,7 @@ process NGS_BITS {
     //def args          = task.ext.args ?: ''
     //def contamination = task.ext.contamination ? "-no_cont" : ""
     //def build         = task.ext.build ?: "$build"
-    def prefix        = task.ext.prefix ?: "${meta.id}_${meta.replicate}_ngsbits"
+    def prefix = task.ext.prefix ?: "${meta.id}_${meta.replicate}_ngsbits"
 
     """
     touch ${prefix}.qcML

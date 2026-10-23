@@ -16,11 +16,11 @@ nextflow.enable.dsl = 2
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 */
 
+include { LONGTX                } from './workflows/longtx'
 include { validateParameters    } from 'plugin/nf-schema'
 include { paramsSummaryLog      } from 'plugin/nf-schema'
 //include { samplesheetToList     } from 'plugin/nf-scheme'
 include { paramsHelp            } from 'plugin/nf-schema'
-include { LONGTX                } from './workflows/longtranscriptomics'
 
 /*
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -42,7 +42,7 @@ workflow {
 
     if (params.help) {
         log.info paramsHelp(
-            beforeText: "Welcome to LongTranscriptomics, I see you are seeking help. ",
+            beforeText: "Welcome to LongTranscriptomics, I see you are seeking help.",
             afterText: "Farewell, hopefully this was helpful.",
             command: "nextflow run . -profile <profile> --outdir <outdir>",
         )

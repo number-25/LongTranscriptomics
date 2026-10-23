@@ -2,34 +2,33 @@ process JAFFAL {
     debug true
     label 'process_high'
     conda "bioconda::jaffa=2.3.0"
-    container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
-        'https://depot.galaxyproject.org/singularity/jaffa:2.3--hdfd78af_0' :
-        'quay.io/biocontainers/jaffa:2.3--hdfd78af_0' }"
+    container "${workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container
+        ? 'https://depot.galaxyproject.org/singularity/jaffa:2.3--hdfd78af_0'
+        : 'quay.io/biocontainers/jaffa:2.3--hdfd78af_0'}"
 
-        //'docker://davidsongroup/jaffa:2.4-devel' :
-        //'docker://davidsongroup/jaffa:2.4-devel' }"
+    input:
+
+    //'docker://davidsongroup/jaffa:2.4-devel' :
+    //'docker://davidsongroup/jaffa:2.4-devel' }"
 
     //singularityRunOptions = '-B $fastq'
     //singularityRunOptions = 'run'
-
-    input:
     tuple val(meta), path(fastq)
     path jaffal_ref_dir
 
     output:
     tuple val(meta), path("*.fasta"), emit: jaffal_fasta
-    path "*.csv"                    , emit: jaffal_results
-    path "versions.yml"             , emit: versions
+    path "*.csv", emit: jaffal_results
+    path "versions.yml", emit: versions
 
     when:
     task.ext.when == null || task.ext.when
-    // prefix??
-
 
     script:
+    // prefix??
     """
     cd .
-    bpipe run -p refBase=$jaffal_ref_dir $jaffal_ref_dir/JAFFAL.groovy $fastq
+    bpipe run -p refBase=${jaffal_ref_dir} ${jaffal_ref_dir}/JAFFAL.groovy ${fastq}
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":

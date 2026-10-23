@@ -1,20 +1,21 @@
 process BAMBU {
-    tag "$meta.id"
+    tag "${meta.id}"
     label 'process_medium'
     conda "conda-forge::r-base=4.0.3 bioconda::bioconductor-bambu=3.0.8 bioconda::bioconductor-bsgenome=1.66.0"
-    container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
-    'docker://number25/bambu:3.12.0' :
-    'docker://quay.io/number_25/bambu:3.12.0' }"
+    container "${workflow.containerEngine in ['singularity', 'apptainer'] && !task.ext.singularity_pull_docker_container
+        ? 'docker://number25/bambu:3.12.0'
+        : 'quay.io/number_25/bambu:3.12.0'}"
 
     input:
-    path(genome_fasta)
-    path(annotation_gtf)
+    path genome_fasta
+    path annotation_gtf
     tuple val(meta), path(bam)
 
     output:
-    path "*.gtf"
-    tuple val(meta), path("supportedTranscriptModels.gtf")  , emit: bambu_supported_gtf
-    path "versions.yml"                                     , emit: versions
+    path "counts_gene.txt"         , emit: gene_counts
+    path "counts_transcript.txt"   , emit: transcript_counts
+    path "extended_annotations.gtf", emit: extended_gtf
+    path "versions.yml"            , emit: versions
 
     when:
     task.ext.when == null || task.ext.when
@@ -23,7 +24,7 @@ process BAMBU {
     """
     run_bambu.r \\
         --tag=. \\
-        --ncore=$task.cpus \\
+        --ncore=${task.cpus} \\
         --annotation=${annotation_gtf} \\
         --fasta=${genome_fasta} \\
         ${bam}

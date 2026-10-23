@@ -7,7 +7,7 @@ workflow INPUT_CHECK {
     main:
     ch_samplesheet = channel.fromPath(samplesheet, checkIfExists: true)
     ch_samplesheet
-        .splitCsv ( header:true, sep:',' )
+        .splitCsv(header: true, sep: ',')
         .map { get_sample_info(it) }
         .set { ch_sample }
 
@@ -16,11 +16,11 @@ workflow INPUT_CHECK {
 }
 
 // Create a meta map from the samplesheet
-def get_sample_info(LinkedHashMap row) {
+def get_sample_info(row: LinkedHashMap) {
     // create meta map
     def meta = [:]
-    meta.id           = row.sample
-    meta.replicate    = row.replicate
+    meta.id = row.sample
+    meta.replicate = row.replicate
 
     // add path(s) of the fastq file to the meta map
     def fastq_meta = []
@@ -28,7 +28,7 @@ def get_sample_info(LinkedHashMap row) {
     //    exit 1, "ERROR: Please check input samplesheet -> Read 1 FastQ file does not exist!\n${row.fastq_1}"
     //}
     //if (meta.single_end) {
-    fastq_meta = [ meta, [ file(row.reads) ] ]
+    fastq_meta = [meta, [file(row.reads)]]
     //} else {
     //    if (!file(row.fastq_2).exists()) {
     //         exit 1, "ERROR: Pl since most the trains are down ease check input samplesheet -> Read 2 FastQ file does not exist!\n${row.fastq_2}"

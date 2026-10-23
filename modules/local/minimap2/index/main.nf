@@ -1,32 +1,31 @@
 process MINIMAP2_INDEX {
-    tag "$genome_fasta"
+    tag "${genome_fasta}"
     label 'process_medium'
     conda "${moduleDir}/environment.yml"
-    container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
-        'https://depot.galaxyproject.org/singularity/minimap2:2.28--he4a0461_0' :
-        'biocontainers/minimap2:2.28--he4a0461_0' }"
+    container "${workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container
+        ? 'https://depot.galaxyproject.org/singularity/minimap2:2.28--he4a0461_0'
+        : 'biocontainers/minimap2:2.28--he4a0461_0'}"
 
     input:
-    path(genome_fasta)
+    path genome_fasta
 
     output:
-    path ("*.mmi"),         emit: index
-    path "versions.yml",    emit: versions
+    path ("*.mmi"), emit: index
+    path "versions.yml", emit: versions
 
     when:
     task.ext.when == null || task.ext.when
 
     script:
-    def args        = task.ext.args ?: ''
     def dRNA_preset = task.ext.dRNA_preset ?: "-ax splice -uf"
-    def kmer        = task.ext.kmer ?: "-k 14"
+    def kmer = task.ext.kmer ?: "-k 14"
     """
     minimap2 \\
         ${dRNA_preset} \\
         ${kmer} \\
-        -t $task.cpus \\
+        -t ${task.cpus} \\
         -d ${genome_fasta.baseName}_k14.mmi \\
-        $genome_fasta \\
+        ${genome_fasta} \\
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":

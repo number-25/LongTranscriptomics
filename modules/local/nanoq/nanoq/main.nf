@@ -1,29 +1,28 @@
 process NANOQ {
-    tag "$meta.id"
+    tag "${meta.id}"
     label 'process_low'
 
     conda "${moduleDir}/environment.yml"
-    container "${workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
-        'https://depot.galaxyproject.org/singularity/nanoq:0.10.0--h031d066_2' :
-        'biocontainers/nanoq:0.10.0--h031d066_2'}"
+    container "${workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container
+        ? 'https://depot.galaxyproject.org/singularity/nanoq:0.10.0--h031d066_2'
+        : 'biocontainers/nanoq:0.10.0--h031d066_2'}"
 
     input:
     tuple val(meta), path(fastq)
-    //val(output_format) //One of the following: fastq, fastq.gz, fastq.bz2, fastq.lzma, fasta, fasta.gz, fasta.bz2, fasta.lzma.
 
     output:
-    tuple val(meta), path("*_stats.txt")            , emit: stats
-    tuple val(meta), path("*_stats_verbose.txt")    , emit: verbose_stats
-    tuple val(meta), path("*.json")             , emit: json_stats
+    //val(output_format) //One of the following: fastq, fastq.gz, fastq.bz2, fastq.lzma, fasta, fasta.gz, fasta.bz2, fasta.lzma.
+    tuple val(meta), path("*_stats.txt"), emit: stats
+    tuple val(meta), path("*_stats_verbose.txt"), emit: verbose_stats
+    tuple val(meta), path("*.json"), emit: json_stats
     //tuple val(meta), path("*_filtered.${output_format}")                              , emit: reads
-    path "versions.yml"                         , emit: versions
+    path "versions.yml", emit: versions
 
     when:
     task.ext.when == null || task.ext.when
 
     script:
-    def args    = task.ext.args ?: ''
-    def prefix  = task.ext.prefix ?: "${meta.id}_${meta.replicate}_nanoq" // get the sample ID from the meta mapping
+    def prefix = task.ext.prefix ?: "${meta.id}_${meta.replicate}_nanoq" // get the sample ID from the meta mapping
     //if ( "${meta.replicate}" ?: '' )
     //    def prefix = task.ext.prefix ?: "${meta.id}_nanoq" // get the sample ID from the meta mapping
     //else
@@ -53,8 +52,7 @@ process NANOQ {
     """
 
     stub:
-    def args    = task.ext.args ?: ''
-    def prefix  = task.ext.prefix ?: "${meta.id}_${meta.replicate}_nanoq"
+    def prefix = task.ext.prefix ?: "${meta.id}_${meta.replicate}_nanoq"
     """
     touch ${prefix}_stats.txt
     touch ${prefix}_stats_verbose.txt

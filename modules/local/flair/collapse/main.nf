@@ -8,7 +8,7 @@ process FLAIR_COLLAPSE {
 
     input:
     tuple val(meta), path(fastq)
-    tuple val(meta), path(mapped_bed)
+    path(mapped_bed)
     path annotation_gtf
     path genome_fasta
 

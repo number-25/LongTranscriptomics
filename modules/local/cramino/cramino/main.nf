@@ -1,32 +1,32 @@
 process CRAMINO {
-    tag "$meta.id"
+    tag "${meta.id}"
     label 'process_low'
     conda "${moduleDir}/environment.yml"
-    container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
-        'https://depot.galaxyproject.org/singularity/cramino:0.15.0--h2e7e638_0':
-        'quay.io/biocontainers/cramino:0.15.0--h2e7e638_0' }"
+    container "${workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container
+        ? 'https://depot.galaxyproject.org/singularity/cramino:0.15.0--h2e7e638_0'
+        : 'quay.io/biocontainers/cramino:0.15.0--h2e7e638_0'}"
 
     input:
     tuple val(meta), path(bam)
     val read_length
 
     output:
-    tuple val(meta) , path("*.stats"), emit: cramino_stats
-    path "versions.yml",               emit: versions
+    tuple val(meta), path("*.stats"), emit: cramino_stats
+    path "versions.yml", emit: versions
 
     when:
     task.ext.when == null || task.ext.when
 
     script:
-    def args        = task.ext.args ?: '--spliced'
+    def args = task.ext.args ?: '--spliced'
     def read_len = task.ext.read_length ?: "--min-read-len ${read_length}"
-    def prefix      = task.ext.prefix ?: "${meta.id}_${meta.replicate}_cramino"
+    def prefix = task.ext.prefix ?: "${meta.id}_${meta.replicate}_cramino"
     """
     cramino \\
-        -t $task.cpus \\
-        $args \\
-        $read_len \\
-        $bam \\
+        -t ${task.cpus} \\
+        ${args} \\
+        ${read_len} \\
+        ${bam} \\
         > ${prefix}.stats
 
     cat <<-END_VERSIONS > versions.yml

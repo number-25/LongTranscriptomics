@@ -8,7 +8,7 @@ process BEDTOOLS_JACCARD {
 
     input:
     tuple val(meta), path(corrected_bed)
-    tuple val(meta), path(mapped_bed)
+    path(mapped_bed)
     val(program)
 
     output:
@@ -19,7 +19,6 @@ process BEDTOOLS_JACCARD {
     task.ext.when == null || task.ext.when
 
     script:
-    //def args = task.ext.args ?: ''
     def prefix = task.ext.prefix ?: "${meta.id}_${meta.replicate}_${program}"
     """
     bedtools \\
@@ -35,7 +34,6 @@ process BEDTOOLS_JACCARD {
     """
 
     stub:
-    //def args = task.ext.args ?: ''
     def prefix = task.ext.prefix ?: "${meta.id}_${meta.replicate}_${program}"
     """
     touch ${prefix}.jaccard

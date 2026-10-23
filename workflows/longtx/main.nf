@@ -14,10 +14,10 @@
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 */
 
-include { softwareVersionsToYAML    } from '../subworkflows/nf-core/utils_nfcore_pipeline'
+include { softwareVersionsToYAML    } from '../../subworkflows/nf-core/utils_nfcore_pipeline'
 include { samplesheetToList         } from 'plugin/nf-schema'
-//include { paramsSummaryMultiqc   } from '../subworkflows/nf-core/utils_nfcore_pipeline'
-//include { methodsDescriptionText } from '../subworkflows/local/utils_nfcore_directrna_pipeline'
+//include { paramsSummaryMultiqc   } from '../../subworkflows/nf-core/utils_nfcore_pipeline'
+//include { methodsDescriptionText } from '../../subworkflows/local/utils_nfcore_directrna_pipeline'
 
 /*
 ----------------------------------------------------------------------------------------
@@ -25,75 +25,76 @@ include { samplesheetToList         } from 'plugin/nf-schema'
 ----------------------------------------------------------------------------------------
 */
 // Check samplesheet
-//include { INPUT_CHECK               } from '../subworkflows/local/input_check'
+//include { INPUT_CHECK               } from '../../subworkflows/local/input_check'
 // Prepare reference files
-include { PREPARE_REFERENCE         } from '../subworkflows/local/prepare_reference'
+include { PREPARE_REFERENCE         } from '../../subworkflows/local/prepare_reference'
 // fastq QC
-include { NANOQ                     } from '../modules/local/nanoq/nanoq'
-include { SEQUALI                   } from '../modules/local/sequali/sequali'
-include { MULTIQC                   } from '../modules/nf-core/multiqc'
+include { NANOQ                     } from '../../modules/local/nanoq/nanoq'
+include { SEQUALI                   } from '../../modules/local/sequali/sequali'
+include { MULTIQC                   } from '../../modules/nf-core/multiqc'
 
 // fastq mapping
-include { MAPPING                   } from '../subworkflows/local/mapping'
+include { MAPPING                                   } from '../../subworkflows/local/mapping'
 // mapping visualisation
-include { BAM_TO_BEDGRAPH as BAM_TO_BEDGRAPH_FW     } from '../modules/local/bedtools/bam_to_bedgraph'
-include { BAM_TO_BEDGRAPH as BAM_TO_BEDGRAPH_REV    } from '../modules/local/bedtools/bam_to_bedgraph'
-include { BEDGRAPH_BEDCLIP_BEDGRAPHTOBIGWIG as BEDGRAPH_BEDCLIP_BEDGRAPHTOBIGWIG_FW } from '../subworkflows/local/bedgraph_bedclip_bedgraphtobigwig'
-include { BEDGRAPH_BEDCLIP_BEDGRAPHTOBIGWIG as BEDGRAPH_BEDCLIP_BEDGRAPHTOBIGWIG_REV } from '../subworkflows/local/bedgraph_bedclip_bedgraphtobigwig'
+include { BAM_TO_BEDGRAPH as BAM_TO_BEDGRAPH_FW     } from '../../modules/local/bedtools/bam_to_bedgraph'
+include { BAM_TO_BEDGRAPH as BAM_TO_BEDGRAPH_REV    } from '../../modules/local/bedtools/bam_to_bedgraph'
+include { BEDGRAPH_BEDCLIP_BEDGRAPHTOBIGWIG as BEDGRAPH_BEDCLIP_BEDGRAPHTOBIGWIG_FW } from '../../subworkflows/local/bedgraph_bedclip_bedgraphtobigwig'
+include { BEDGRAPH_BEDCLIP_BEDGRAPHTOBIGWIG as BEDGRAPH_BEDCLIP_BEDGRAPHTOBIGWIG_REV } from '../../subworkflows/local/bedgraph_bedclip_bedgraphtobigwig'
 
 // bam QC
-include { BAM_QC                    } from '../subworkflows/local/bam_qc'
-include { SAMTOOLS_INDEX            } from '../modules/local/samtools/index'
+include { BAM_QC                    } from '../../subworkflows/local/bam_qc'
+include { SAMTOOLS_INDEX            } from '../../modules/local/samtools/index'
 
 // transcript reconstruction
-include { BAM_TO_BED12              } from '../modules/local/flair/bam_to_bed12'
-include { FLAIR_CORRECT             } from '../modules/local/flair/correct'
-include { FLAIR_COLLAPSE            } from '../modules/local/flair/collapse'
-include { BAMBU                     } from '../modules/local/bambu/bambu'
-include { ISOQUANT                  } from '../modules/local/isoquant/isoquant'
-include { GTF2DB                    } from '../modules/local/isoquant/gtf2db'
-include { STRINGTIE                 } from '../modules/local/stringtie/stringtie'
-include { GFFREAD_GETFASTA as GFFREAD_GETFASTA_BAMBU    } from '../modules/local/gffread/gffread'
-include { GFFREAD_GETFASTA as GFFREAD_GETFASTA_ISOQUANT } from '../modules/local/gffread/gffread'
-include { GFFREAD_GETFASTA as GFFREAD_GETFASTA_STRINGTIE} from '../modules/local/gffread/gffread'
+include { BAM_TO_BED12              } from '../../modules/local/flair/bam_to_bed12'
+include { FLAIR_CORRECT             } from '../../modules/local/flair/correct'
+include { FLAIR_COLLAPSE            } from '../../modules/local/flair/collapse'
+include { BAMBU                     } from '../../modules/local/bambu/bambu'
+include { SUBSET_BAMBU_GTF          } from '../../modules/local/bambu/bambu/subset_gtf'
+include { ISOQUANT                  } from '../../modules/local/isoquant/isoquant'
+include { GTF2DB                    } from '../../modules/local/isoquant/gtf2db'
+include { STRINGTIE                 } from '../../modules/local/stringtie/stringtie'
+include { GFFREAD_GETFASTA as GFFREAD_GETFASTA_BAMBU    } from '../../modules/local/gffread/gffread'
+include { GFFREAD_GETFASTA as GFFREAD_GETFASTA_ISOQUANT } from '../../modules/local/gffread/gffread'
+include { GFFREAD_GETFASTA as GFFREAD_GETFASTA_STRINGTIE} from '../../modules/local/gffread/gffread'
 
 // fusion gene detection
-include { JAFFAL                    } from '../modules/local/jaffal/bpipe'
+include { JAFFAL                    } from '../../modules/local/jaffal/bpipe'
 
 // OARFISH
-include { OARFISH as OARFISH_FLAIR                      } from '../modules/local/oarfish/raw_read'
-include { OARFISH as OARFISH_BAMBU                      } from '../modules/local/oarfish/raw_read'
-include { OARFISH as OARFISH_ISOQUANT                   } from '../modules/local/oarfish/raw_read'
-include { OARFISH as OARFISH_STRINGTIE                  } from '../modules/local/oarfish/raw_read'
+include { OARFISH as OARFISH_FLAIR                      } from '../../modules/local/oarfish/raw_read'
+include { OARFISH as OARFISH_BAMBU                      } from '../../modules/local/oarfish/raw_read'
+include { OARFISH as OARFISH_ISOQUANT                   } from '../../modules/local/oarfish/raw_read'
+include { OARFISH as OARFISH_STRINGTIE                  } from '../../modules/local/oarfish/raw_read'
 // TRANSIGNER
 
 // transcriptome assessment
 // JACCARD for tools using read correction
-include { BEDTOOLS_JACCARD as BEDTOOLS_JACCARD_FLAIR    } from '../modules/local/bedtools/jaccard'
-include { BEDTOOLS_JACCARD as BEDTOOLS_JACCARD_ISOQUANT } from '../modules/local/bedtools/jaccard'
+include { BEDTOOLS_JACCARD as BEDTOOLS_JACCARD_FLAIR    } from '../../modules/local/bedtools/jaccard'
+include { BEDTOOLS_JACCARD as BEDTOOLS_JACCARD_ISOQUANT } from '../../modules/local/bedtools/jaccard'
 // GFFCOMPARE
-include { GFFCOMPARE as GFFCOMPARE_FLAIR          } from '../modules/local/gffcompare/gffcompare'
-include { GFFCOMPARE as GFFCOMPARE_BAMBU          } from '../modules/local/gffcompare/gffcompare'
-include { GFFCOMPARE as GFFCOMPARE_ISOQUANT       } from '../modules/local/gffcompare/gffcompare'
-include { GFFCOMPARE as GFFCOMPARE_STRINGTIE      } from '../modules/local/gffcompare/gffcompare'
+include { GFFCOMPARE as GFFCOMPARE_FLAIR          } from '../../modules/local/gffcompare/gffcompare'
+include { GFFCOMPARE as GFFCOMPARE_BAMBU          } from '../../modules/local/gffcompare/gffcompare'
+include { GFFCOMPARE as GFFCOMPARE_ISOQUANT       } from '../../modules/local/gffcompare/gffcompare'
+include { GFFCOMPARE as GFFCOMPARE_STRINGTIE      } from '../../modules/local/gffcompare/gffcompare'
 
-include { PROFILE_UNMAPPED_READS                } from '../subworkflows/local/profile_unmapped_reads'
-include { SAMTOOLS_FASTA                        } from '../modules/local/samtools/fasta'
+include { PROFILE_UNMAPPED_READS                } from '../../subworkflows/local/profile_unmapped_reads'
+include { SAMTOOLS_FASTA                        } from '../../modules/local/samtools/fasta'
 
 // Going to be a bit of a long-think
-//include { SQANTI_PREPARE_REFERENCE                  } from '../subworkflows/local/sqanti/'
-//include { QC_SQANTI as SQANTI_QC_FLAIR              } from '../subworkflows/local/sqanti/qc'
-//include { QC_SQANTI as SQANTI_QC_BAMBU              } from '../subworkflows/local/sqanti/qc'
-//include { QC_SQANTI as SQANTI_QC_ISOQUANT           } from '../subworkflows/local/sqanti/qc'
-//include { QC_SQANTI as SQANTI_QC_STRINGTIE          } from '../subworkflows/local/sqanti/qc'
-//include { SQANTI_FILTER as SQANTI_FILTER_FLAIR      } from '../subworkflows/local/sqanti/filter'
-//include { SQANTI_FILTER as SQANTI_FILTER_BAMBU      } from '../subworkflows/local/sqanti/filter'
-//include { SQANTI_FILTER as SQANTI_FILTER_ISOQUANT   } from '../subworkflows/local/sqanti/filter'
-//include { SQANTI_FILTER as SQANTI_FILTER_STRINGTIE  } from '../subworkflows/local/sqanti/filter'
-//include { SQANTI_RESCUE as SQANTI_RESCUE_FLAIR      } from '../subworkflows/local/sqanti/rescue'
-//include { SQANTI_RESCUE as SQANTI_RESCUE_BAMBU      } from '../subworkflows/local/sqanti/rescue'
-//include { SQANTI_RESCUE as SQANTI_RESCUE_ISOQUANT   } from '../subworkflows/local/sqanti/rescue'
-//include { SQANTI_RESCUE as SQANTI_RESCUE_STRINGTIE  } from '../subworkflows/local/sqanti/rescue'
+//include { SQANTI_PREPARE_REFERENCE                  } from '../../subworkflows/local/sqanti/'
+//include { QC_SQANTI as SQANTI_QC_FLAIR              } from '../../subworkflows/local/sqanti/qc'
+//include { QC_SQANTI as SQANTI_QC_BAMBU              } from '../../subworkflows/local/sqanti/qc'
+//include { QC_SQANTI as SQANTI_QC_ISOQUANT           } from '../../subworkflows/local/sqanti/qc'
+//include { QC_SQANTI as SQANTI_QC_STRINGTIE          } from '../../subworkflows/local/sqanti/qc'
+//include { SQANTI_FILTER as SQANTI_FILTER_FLAIR      } from '../../subworkflows/local/sqanti/filter'
+//include { SQANTI_FILTER as SQANTI_FILTER_BAMBU      } from '../../subworkflows/local/sqanti/filter'
+//include { SQANTI_FILTER as SQANTI_FILTER_ISOQUANT   } from '../../subworkflows/local/sqanti/filter'
+//include { SQANTI_FILTER as SQANTI_FILTER_STRINGTIE  } from '../../subworkflows/local/sqanti/filter'
+//include { SQANTI_RESCUE as SQANTI_RESCUE_FLAIR      } from '../../subworkflows/local/sqanti/rescue'
+//include { SQANTI_RESCUE as SQANTI_RESCUE_BAMBU      } from '../../subworkflows/local/sqanti/rescue'
+//include { SQANTI_RESCUE as SQANTI_RESCUE_ISOQUANT   } from '../../subworkflows/local/sqanti/rescue'
+//include { SQANTI_RESCUE as SQANTI_RESCUE_STRINGTIE  } from '../../subworkflows/local/sqanti/rescue'
 
 // transcript reconstruction subworkflow?
 // include { TRANSCRIPT_RECONSTRUCTION
@@ -106,11 +107,15 @@ include { SAMTOOLS_FASTA                        } from '../modules/local/samtool
 
 workflow LONGTX {
 
-//def mandatoryParams() {
+    //take:
 
+    //ch_input
+    main:
+
+    //def mandatoryParams() {
     // Create a new channel of metadata from a sample sheet passed to the pipeline through the --input parameter
     ch_sample = channel.fromList(samplesheetToList(params.input, "assets/schema_input.json"))
-            .view()
+            //.view()
 
 //  if (params.input) {
        // ch_input = file(params.input)
@@ -147,13 +152,7 @@ workflow LONGTX {
     }
 //}
 
-
-    //take:
-    //ch_input
-    main:
-
     ch_versions = channel.empty()
-    ch_versions.view()
     ch_multiqc_files = channel.empty()
     //def multiqc_report      = []
 
@@ -173,13 +172,13 @@ workflow LONGTX {
                 NANOQ( ch_sample )
                 ch_nanoq_stats = NANOQ.out.stats.collect{it -> it[1]}.flatten()
                 ch_multiqc_files = ch_multiqc_files.mix(ch_nanoq_stats.ifEmpty([]))
-                ch_versions = ch_versions.mix(NANOQ.out.versions.first())
+                ch_versions = ch_versions.mix(NANOQ.out.versions)
             }
             if (!params.skip_sequali) {
                 SEQUALI( ch_sample )
                 ch_sequali_stats = SEQUALI.out.sequali_json.collect{it -> it[1]}.flatten()
                 ch_multiqc_files = ch_multiqc_files.mix(ch_sequali_stats.ifEmpty([]))
-                ch_versions = ch_versions.mix(SEQUALI.out.versions.first())
+                ch_versions = ch_versions.mix(SEQUALI.out.versions)
             }
         }
     }
@@ -264,7 +263,7 @@ workflow LONGTX {
         ch_mixed_bam = ch_bam.combine(ch_bam_index_path)
         SAMTOOLS_FASTA( ch_bam )
         ch_unmapped_reads = SAMTOOLS_FASTA.out.fasta
-        ch_versions = ch_versions.mix(MAPPING.out.versions.first())
+        ch_versions = ch_versions.mix(MAPPING.out.versions)
     } else {
         ch_bam = ch_sample
         SAMTOOLS_INDEX( ch_bam )
@@ -310,6 +309,7 @@ workflow LONGTX {
             ch_bam,
             ch_mixed_bam,
             ch_genome_fasta,
+            ch_genome_fasta_with_index,
             ch_transcriptome_fasta,
             ch_cramino_min_length
             )
@@ -362,18 +362,24 @@ workflow LONGTX {
     if (!params.skip_bambu) {
         if (!params.transcriptome_mapping) {
             BAMBU( ch_genome_fasta, ch_annotation_gtf, ch_bam )
-            ch_bambu_supported_gtf = BAMBU.out.bambu_supported_gtf
-            ch_versions = ch_versions.mix(BAMBU.out.versions.first())
-            GFFREAD_GETFASTA_BAMBU( ch_bambu_supported_gtf, ch_genome_fasta_with_index, 'bambu' )
+            ch_bambu_extended_gtf = BAMBU.out.extended_gtf
+            ch_bambu_gene_counts = BAMBU.out.gene_counts
+            ch_versions = ch_versions.mix(BAMBU.out.versions)
+            SUBSET_BAMBU_GTF( ch_bambu_extended_gtf, ch_bambu_gene_counts )
+            ch_subset_bambu_gtf = SUBSET_BAMBU_GTF.out.subset_gtf
+            GFFREAD_GETFASTA_BAMBU( ch_subset_bambu_gtf, ch_genome_fasta_with_index, 'bambu' )
             ch_bambu_transcripts = GFFREAD_GETFASTA_BAMBU.out.transcripts_fa
-            ch_versions = ch_versions.mix(GFFREAD_GETFASTA_BAMBU.out.versions.first())
+            ch_versions = ch_versions.mix(GFFREAD_GETFASTA_BAMBU.out.versions)
         } else {
             BAMBU( ch_transcriptome_fasta, ch_annotation_gtf, ch_bam )
-            ch_bambu_supported_gtf = BAMBU.out.bambu_supported_gtf
-            ch_versions = ch_versions.mix(BAMBU.out.versions.first())
-            GFFREAD_GETFASTA_BAMBU( ch_bambu_supported_gtf, ch_transcriptome_fasta_with_index, 'bambu' )
+            ch_bambu_extended_gtf = BAMBU.out.extended_gtf
+            ch_bambu_gene_counts = BAMBU.out.gene_counts
+            ch_versions = ch_versions.mix(BAMBU.out.versions)
+            SUBSET_BAMBU_GTF( ch_bambu_extended_gtf, ch_bambu_gene_counts )
+            ch_subset_bambu_gtf = SUBSET_BAMBU_GTF.out.subset_gtf
+            GFFREAD_GETFASTA_BAMBU( ch_subset_bambu_gtf, ch_transcriptome_fasta_with_index, 'bambu' )
             ch_bambu_transcripts = GFFREAD_GETFASTA_BAMBU.out.transcripts_fa
-            ch_versions = ch_versions.mix(GFFREAD_GETFASTA_BAMBU.out.versions.first())
+            ch_versions = ch_versions.mix(GFFREAD_GETFASTA_BAMBU.out.versions)
         }
     }
 
@@ -384,10 +390,10 @@ workflow LONGTX {
         if (!params.transcriptome_mapping) {
             ISOQUANT( ch_mixed_bam, ch_isoquant_database, ch_genome_fasta)
             ch_isoquant_gtf = ISOQUANT.out.isoquant_transcript_gtf
-            ch_versions = ch_versions.mix(ISOQUANT.out.versions.first())
+            ch_versions = ch_versions.mix(ISOQUANT.out.versions)
             GFFREAD_GETFASTA_ISOQUANT( ch_isoquant_gtf, ch_genome_fasta_with_index, 'isoquant' )
             ch_isoquant_transcripts = GFFREAD_GETFASTA_ISOQUANT.out.transcripts_fa
-            ch_versions = ch_versions.mix(GFFREAD_GETFASTA_ISOQUANT.out.versions.first())
+            ch_versions = ch_versions.mix(GFFREAD_GETFASTA_ISOQUANT.out.versions)
         }
     }
 
@@ -395,15 +401,15 @@ workflow LONGTX {
     if (!params.skip_stringtie) {
         STRINGTIE( ch_bam, ch_annotation_gtf )
         ch_stringtie_gtf = STRINGTIE.out.stringtie_gtf
-        ch_versions = ch_versions.mix(STRINGTIE.out.versions.first())
+        ch_versions = ch_versions.mix(STRINGTIE.out.versions)
         if (!params.transcriptome_mapping) {
             GFFREAD_GETFASTA_STRINGTIE( ch_stringtie_gtf, ch_genome_fasta_with_index, 'stringtie' )
             ch_stringtie_transcripts = GFFREAD_GETFASTA_STRINGTIE.out.transcripts_fa
-            ch_versions = ch_versions.mix(GFFREAD_GETFASTA_STRINGTIE.out.versions.first())
+            ch_versions = ch_versions.mix(GFFREAD_GETFASTA_STRINGTIE.out.versions)
         } else {
             GFFREAD_GETFASTA_STRINGTIE( ch_stringtie_gtf, ch_transcriptome_fasta_with_index, 'stringtie' )
             ch_stringtie_transcripts = GFFREAD_GETFASTA_STRINGTIE.out.transcripts_fa
-            ch_versions = ch_versions.mix(GFFREAD_GETFASTA_STRINGTIE.out.versions.first())
+            ch_versions = ch_versions.mix(GFFREAD_GETFASTA_STRINGTIE.out.versions)
         }
     }
 
@@ -413,7 +419,7 @@ workflow LONGTX {
         JAFFAL( ch_sample, ch_jaffal_reference_dir )
         ch_jaffal_fasta = JAFFAL.out.jaffal_fasta
         ch_jaffal_csv = JAFFAL.out.jaffal_results
-        ch_versions = ch_versions.mix(JAFFAL.out.versions.first())
+        ch_versions = ch_versions.mix(JAFFAL.out.versions)
         }
 
     //
@@ -429,11 +435,11 @@ workflow LONGTX {
         }
         if (!params.skip_bambu) {
             if (!params.transcriptome_mapping) {
-                GFFCOMPARE_BAMBU( ch_genome_fasta_with_index, ch_bambu_supported_gtf, ch_annotation_gtf, 'bambu' )
+                GFFCOMPARE_BAMBU( ch_genome_fasta_with_index, ch_subset_bambu_gtf, ch_annotation_gtf, 'bambu' )
                 ch_bambu_gffcompare_stats = GFFCOMPARE_BAMBU.out.gffcompare_stats.collect{it -> it[1]}.flatten()
                 ch_multiqc_files = ch_multiqc_files.mix(ch_bambu_gffcompare_stats.ifEmpty([]))
             } else {
-                GFFCOMPARE_BAMBU( ch_transcriptome_fasta_with_index, ch_bambu_supported_gtf, ch_annotation_gtf, 'bambu' )
+                GFFCOMPARE_BAMBU( ch_transcriptome_fasta_with_index, ch_subset_bambu_gtf, ch_annotation_gtf, 'bambu' )
                 ch_bambu_gffcompare_stats = GFFCOMPARE_BAMBU.out.gffcompare_stats.collect{it -> it[1]}.flatten()
                 ch_multiqc_files = ch_multiqc_files.mix(ch_bambu_gffcompare_stats.ifEmpty([]))
             }

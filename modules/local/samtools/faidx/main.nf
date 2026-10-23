@@ -21,7 +21,6 @@ process SAMTOOLS_FAIDX {
     task.ext.when == null || task.ext.when
 
     script:
-    def args = task.ext.args ?: ''
     """
     samtools \\
         faidx \\

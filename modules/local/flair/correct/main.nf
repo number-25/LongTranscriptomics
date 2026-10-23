@@ -1,36 +1,36 @@
 process FLAIR_CORRECT {
-    tag "$meta.id"
+    tag "${meta.id}"
     label 'process_medium'
     conda "${moduleDir}/environment.yml"
-    container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
-        'https://depot.galaxyproject.org/singularity/flair:2.2.0--pyhdfd78af_0':
-        'brookslab/flair:2.2.0' }"
+    container "${workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container
+        ? 'https://depot.galaxyproject.org/singularity/flair:2.2.0--pyhdfd78af_0'
+        : 'brookslab/flair:2.2.0'}"
 
     input:
     tuple val(meta), path(bed)
     path genome_fasta
     path annotation_gtf
 
-    // FLAIR correct has many outputs
     output:
-    tuple val(meta), path("*_corrected.bed"),       emit: flair_corrected_bed
-    tuple val(meta), path("*_inconsistent.bed"),    emit: flair_inconsistent_bed
-    tuple val(meta), path("*_verify.bed"),          emit: flair_unverified_bed
-    path "versions.yml",                            emit: versions
+
+    // FLAIR correct has many outputs
+    tuple val(meta), path("*_corrected.bed"), emit: flair_corrected_bed
+    tuple val(meta), path("*_inconsistent.bed"), emit: flair_inconsistent_bed
+    tuple val(meta), path("*_verify.bed"), emit: flair_unverified_bed
+    path "versions.yml", emit: versions
 
     when:
     task.ext.when == null || task.ext.when
 
     script:
-    def args    = task.ext.args ?: ''
-    def prefix  = task.ext.prefix ?: "${meta.id}_${meta.replicate}_flair_correct"
+    def prefix = task.ext.prefix ?: "${meta.id}_${meta.replicate}_flair_correct"
     """
     flair \\
         correct \\
         -q ${bed} \\
         -f ${annotation_gtf} \\
         -g ${genome_fasta} \\
-        --threads $task.cpus \\
+        --threads ${task.cpus} \\
         --output ${prefix}
 
     cat <<-END_VERSIONS > versions.yml
@@ -40,8 +40,7 @@ process FLAIR_CORRECT {
     """
 
     stub:
-    def args    = task.ext.args ?: ''
-    def prefix  = task.ext.prefix ?: "${meta.id}_${meta.replicate}_flair_correct"
+    def prefix = task.ext.prefix ?: "${meta.id}_${meta.replicate}_flair_correct"
     """
     touch ${prefix}_all_corrected.bed
     touch ${prefix}_all_inconsistent.bed
