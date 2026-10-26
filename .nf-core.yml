@@ -37,11 +37,14 @@ lint:
     - .github/ISSUE_TEMPLATE/bug_report.yml
   multiqc_config:
     - report_comment
+  modules_config:
+    - gunzip
+    - custom/getchromsizes
   nextflow_config: false
   #    - manifest.name
   #    - manifest.homePage
   nf_test_content: False
-nf_core_version: 4.0.2
+nf_core_version: 4.2.0
 repository_type: pipeline
 template:
   prefix: number-25

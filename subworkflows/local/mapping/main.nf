@@ -36,7 +36,7 @@ workflow MAPPING {
 
     SAMTOOLS_INDEX(SAMTOOLS_SORT.out.bam)
     ch_sample_bam_idx = SAMTOOLS_INDEX.out.bai
-    ch_versions = ch_versions.mix(SAMTOOLS_INDEX.out.versions.first())
+    ch_versions = ch_versions.mix(SAMTOOLS_INDEX.out.versions)
 
     SAMTOOLS_FASTA(ch_sample_bam)
     ch_sample_unmapped_reads = SAMTOOLS_FASTA.out.fasta

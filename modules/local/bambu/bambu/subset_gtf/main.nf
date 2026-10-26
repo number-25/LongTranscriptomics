@@ -7,19 +7,19 @@ process SUBSET_BAMBU_GTF {
         : 'quay.io/number_25/alpine-plus-plus-plus:3.21.0'}"
 
     input:
-    path extended_gtf
-    path gene_counts
+    tuple val(meta), path(extended_gtf)
+    path transcript_counts
 
     output:
-    path "subset_annotations.gtf",      emit: subset_gtf
-    path "versions.yml",                emit: versions
+    tuple val(meta), path("subset_annotations.gtf"),    emit: subset_gtf
+    path "versions.yml",                                emit: versions
 
     when:
     task.ext.when == null || task.ext.when
 
     script:
     """
-    awk 'BEGIN {FS="\t";OFS="\t"} \$2 == 0 {print \$1}' ${gene_counts} | grep -F -v -f - ${extended_gtf} >> "subset_annotations.gtf"
+    awk 'BEGIN {FS="\t";OFS="\t"} \$3 != 0 {print \$1}' ${transcript_counts} | grep -wF -f - ${extended_gtf} >> "subset_annotations.gtf"
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":

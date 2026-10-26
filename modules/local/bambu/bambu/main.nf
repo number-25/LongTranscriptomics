@@ -12,10 +12,10 @@ process BAMBU {
     tuple val(meta), path(bam)
 
     output:
-    path "counts_gene.txt"         , emit: gene_counts
-    path "counts_transcript.txt"   , emit: transcript_counts
-    path "extended_annotations.gtf", emit: extended_gtf
-    path "versions.yml"            , emit: versions
+    path "counts_gene.txt",                             emit: gene_counts
+    path "counts_transcript.txt",                       emit: transcript_counts
+    tuple val(meta), path("extended_annotations.gtf"),  emit: extended_gtf
+    path "versions.yml",                                emit: versions
 
     when:
     task.ext.when == null || task.ext.when

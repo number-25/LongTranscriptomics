@@ -19,13 +19,13 @@ workflow BEDGRAPH_BEDCLIP_BEDGRAPHTOBIGWIG {
     // Clip bedGraph file
     //
     UCSC_BEDCLIP(bedgraph, sizes, strand)
-    ch_versions = ch_versions.mix(UCSC_BEDCLIP.out.versions.first())
+    ch_versions = ch_versions.mix(UCSC_BEDCLIP.out.versions)
 
     //
     // Convert bedGraph to bigWig
     //
     UCSC_BEDGRAPHTOBIGWIG(UCSC_BEDCLIP.out.bedgraph, sizes, strand)
-    ch_versions = ch_versions.mix(UCSC_BEDGRAPHTOBIGWIG.out.versions.first())
+    ch_versions = ch_versions.mix(UCSC_BEDGRAPHTOBIGWIG.out.versions)
 
     emit:
     bigwig = UCSC_BEDGRAPHTOBIGWIG.out.bigwig // channel: [ val(meta), [ bigwig ] ]

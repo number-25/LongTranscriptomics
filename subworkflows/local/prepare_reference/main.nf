@@ -2,14 +2,14 @@
 // Uncompress and prepare reference files
 //
 
-include { GUNZIP as GUNZIP_FASTA } from '../../../modules/nf-core/gunzip'
-include { CUSTOM_GETCHROMSIZES as INDEX_GENOME } from '../../../modules/nf-core/custom/getchromsizes'
-include { CUSTOM_GETCHROMSIZES as INDEX_TRANSCRIPTOME } from '../../../modules/nf-core/custom/getchromsizes'
+include { GUNZIP as GUNZIP_FASTA } from '../../../modules/local/gunzip'
+include { CUSTOM_GETCHROMSIZES as INDEX_GENOME } from '../../../modules/local/custom/getchromsizes'
+include { CUSTOM_GETCHROMSIZES as INDEX_TRANSCRIPTOME } from '../../../modules/local/custom/getchromsizes'
 include { MINIMAP2_INDEX as MINIMAP2_GENOME_INDEX } from '../../../modules/local/minimap2/index'
 include { MINIMAP2_INDEX as MINIMAP2_TXOME_INDEX } from '../../../modules/local/minimap2/index'
-include { GUNZIP as GUNZIP_TRANSCRIPTOME } from '../../../modules/nf-core/gunzip'
+include { GUNZIP as GUNZIP_TRANSCRIPTOME } from '../../../modules/local/gunzip'
 //include { SAMTOOLS_FAIDX                            } from '../../../modules/local/samtools/faidx'
-include { GUNZIP as GUNZIP_ANNOTATION_GTF } from '../../../modules/nf-core/gunzip'
+include { GUNZIP as GUNZIP_ANNOTATION_GTF } from '../../../modules/local/gunzip'
 include { SQANTI_PREPARE_REFERENCE } from '../../local/sqanti/sqanti_prepare_reference'
 include { JAFFAL_PREPARE_REFERENCE } from '../../local/jaffal_prepare_reference'
 include { UNZIP } from '../../../modules/local/unzip/unzip'
@@ -70,7 +70,7 @@ workflow PREPARE_REFERENCE {
     if (!genome_fasta_index) {
         INDEX_GENOME(ch_genome_fasta)
         ch_genome_fasta_index = INDEX_GENOME.out.fai
-        ch_versions = ch_versions.mix(INDEX_GENOME.out.versions.first())
+        ch_versions = ch_versions.mix(INDEX_GENOME.out.versions)
     }
     else {
         ch_genome_fasta_index = channel.value(file(genome_fasta_index, checkIfExists: true))
@@ -80,7 +80,7 @@ workflow PREPARE_REFERENCE {
     if (!genome_fasta_sizes) {
         INDEX_GENOME(ch_genome_fasta)
         ch_genome_fasta_sizes = INDEX_GENOME.out.sizes
-        ch_versions = ch_versions.mix(INDEX_GENOME.out.versions.first())
+        ch_versions = ch_versions.mix(INDEX_GENOME.out.versions)
     }
     else {
         ch_genome_fasta_sizes = channel.value(file(genome_fasta_sizes, checkIfExists: true))
@@ -101,7 +101,7 @@ workflow PREPARE_REFERENCE {
     if (!transcriptome_fasta_index) {
         INDEX_TRANSCRIPTOME(ch_transcriptome_fasta)
         ch_transcriptome_fasta_index = INDEX_TRANSCRIPTOME.out.fai
-        ch_versions = ch_versions.mix(INDEX_TRANSCRIPTOME.out.versions.first())
+        ch_versions = ch_versions.mix(INDEX_TRANSCRIPTOME.out.versions)
     }
     else {
         ch_transcriptome_fasta_index = channel.fromPath(params.transcriptome_fasta_index, checkIfExists: true)

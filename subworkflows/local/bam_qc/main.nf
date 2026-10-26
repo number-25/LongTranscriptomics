@@ -34,7 +34,7 @@ workflow BAM_QC {
     if (skip_cramino != true) {
         CRAMINO(bam, cramino_min_length)
         ch_cramino = CRAMINO.out.cramino_stats
-        ch_versions = ch_versions.mix(CRAMINO.out.versions.first())
+        ch_versions = ch_versions.mix(CRAMINO.out.versions)
     }
     else {
         ch_cramino = null
@@ -47,7 +47,7 @@ workflow BAM_QC {
             ch_alfred_stats = ALFRED.out.alfred_stats
             TRANSPOSE(ch_alfred_stats)
             ch_alfred_stats_transposed = TRANSPOSE.out.alfred_stats_transposed
-            ch_versions = ch_versions.mix(ALFRED.out.versions.first())
+            ch_versions = ch_versions.mix(ALFRED.out.versions)
             ch_versions = ch_versions.mix(TRANSPOSE.out.versions)
         }
         else {
@@ -55,7 +55,7 @@ workflow BAM_QC {
             ch_alfred_stats = ALFRED.out.alfred_stats
             TRANSPOSE(ch_alfred_stats)
             ch_alfred_stats_transposed = TRANSPOSE.out.alfred_stats_transposed
-            ch_versions = ch_versions.mix(ALFRED.out.versions.first())
+            ch_versions = ch_versions.mix(ALFRED.out.versions)
             ch_versions = ch_versions.mix(TRANSPOSE.out.versions)
         }
     }
@@ -83,7 +83,7 @@ workflow BAM_QC {
                 ngs_bits_skip_contamination,
             )
             ch_ngs_bits = NGS_BITS.out.qcML
-            ch_versions = ch_versions.mix(NGS_BITS.out.versions.first())
+            ch_versions = ch_versions.mix(NGS_BITS.out.versions)
         }
         else {
             ch_ngs_bits = null

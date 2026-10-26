@@ -31,7 +31,7 @@ include { PREPARE_REFERENCE         } from '../../subworkflows/local/prepare_ref
 // fastq QC
 include { NANOQ                     } from '../../modules/local/nanoq/nanoq'
 include { SEQUALI                   } from '../../modules/local/sequali/sequali'
-include { MULTIQC                   } from '../../modules/nf-core/multiqc'
+include { MULTIQC                   } from '../../modules/local/multiqc'
 
 // fastq mapping
 include { MAPPING                                   } from '../../subworkflows/local/mapping'
@@ -359,25 +359,28 @@ workflow LONGTX {
     }
 
     // BAMBU
+
     if (!params.skip_bambu) {
         if (!params.transcriptome_mapping) {
             BAMBU( ch_genome_fasta, ch_annotation_gtf, ch_bam )
             ch_bambu_extended_gtf = BAMBU.out.extended_gtf
-            ch_bambu_gene_counts = BAMBU.out.gene_counts
+            ch_bambu_transcript_counts = BAMBU.out.transcript_counts
             ch_versions = ch_versions.mix(BAMBU.out.versions)
-            SUBSET_BAMBU_GTF( ch_bambu_extended_gtf, ch_bambu_gene_counts )
-            ch_subset_bambu_gtf = SUBSET_BAMBU_GTF.out.subset_gtf
-            GFFREAD_GETFASTA_BAMBU( ch_subset_bambu_gtf, ch_genome_fasta_with_index, 'bambu' )
+            SUBSET_BAMBU_GTF( ch_bambu_extended_gtf, ch_bambu_transcript_counts )
+            ch_subset_bambu_gtf_tuple = SUBSET_BAMBU_GTF.out.subset_gtf
+            //ch_subset_bambu_gtf_tuple = ch_bam.map{ it -> it[0] }.combine(ch_subset_bambu_gtf)
+            GFFREAD_GETFASTA_BAMBU( ch_subset_bambu_gtf_tuple, ch_genome_fasta_with_index, 'bambu' )
             ch_bambu_transcripts = GFFREAD_GETFASTA_BAMBU.out.transcripts_fa
             ch_versions = ch_versions.mix(GFFREAD_GETFASTA_BAMBU.out.versions)
         } else {
             BAMBU( ch_transcriptome_fasta, ch_annotation_gtf, ch_bam )
             ch_bambu_extended_gtf = BAMBU.out.extended_gtf
-            ch_bambu_gene_counts = BAMBU.out.gene_counts
+            ch_bambu_transcript_counts = BAMBU.out.transcript_counts
             ch_versions = ch_versions.mix(BAMBU.out.versions)
-            SUBSET_BAMBU_GTF( ch_bambu_extended_gtf, ch_bambu_gene_counts )
-            ch_subset_bambu_gtf = SUBSET_BAMBU_GTF.out.subset_gtf
-            GFFREAD_GETFASTA_BAMBU( ch_subset_bambu_gtf, ch_transcriptome_fasta_with_index, 'bambu' )
+            SUBSET_BAMBU_GTF( ch_bambu_extended_gtf, ch_bambu_transcript_counts )
+            ch_subset_bambu_gtf_tuple = SUBSET_BAMBU_GTF.out.subset_gtf
+            //ch_subset_bambu_gtf_tuple = ch_bam.map{ it -> it[0] }.combine(ch_subset_bambu_gtf)
+            GFFREAD_GETFASTA_BAMBU( ch_subset_bambu_gtf_tuple, ch_transcriptome_fasta_with_index, 'bambu' )
             ch_bambu_transcripts = GFFREAD_GETFASTA_BAMBU.out.transcripts_fa
             ch_versions = ch_versions.mix(GFFREAD_GETFASTA_BAMBU.out.versions)
         }
@@ -435,11 +438,11 @@ workflow LONGTX {
         }
         if (!params.skip_bambu) {
             if (!params.transcriptome_mapping) {
-                GFFCOMPARE_BAMBU( ch_genome_fasta_with_index, ch_subset_bambu_gtf, ch_annotation_gtf, 'bambu' )
+                GFFCOMPARE_BAMBU( ch_genome_fasta_with_index, ch_subset_bambu_gtf_tuple, ch_annotation_gtf, 'bambu' )
                 ch_bambu_gffcompare_stats = GFFCOMPARE_BAMBU.out.gffcompare_stats.collect{it -> it[1]}.flatten()
                 ch_multiqc_files = ch_multiqc_files.mix(ch_bambu_gffcompare_stats.ifEmpty([]))
             } else {
-                GFFCOMPARE_BAMBU( ch_transcriptome_fasta_with_index, ch_subset_bambu_gtf, ch_annotation_gtf, 'bambu' )
+                GFFCOMPARE_BAMBU( ch_transcriptome_fasta_with_index, +ch_subset_bambu_gtf_tuple, ch_annotation_gtf, 'bambu' )
                 ch_bambu_gffcompare_stats = GFFCOMPARE_BAMBU.out.gffcompare_stats.collect{it -> it[1]}.flatten()
                 ch_multiqc_files = ch_multiqc_files.mix(ch_bambu_gffcompare_stats.ifEmpty([]))
             }
