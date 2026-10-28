@@ -122,19 +122,25 @@
             "properties": {
                 "multiqc_config": {
                     "type": "string",
-                    "description": "Custom config file to supply to MultiQC."
+                    "format": "file-type",
+                    "description": "Custom config file to supply to MultiQC.",
+                    "default": null
                 },
                 "multiqc_logo": {
                     "type": "string",
-                    "description": "Custom logo file to supply to MultiQC. File name must also be set in the MultiQC config file."
+                    "format": "file-type",
+                    "description": "Custom logo file to supply to MultiQC. File name must also be set in the MultiQC config file.",
+                    "default": null
                 },
                 "multiqc_methods_description": {
                     "type": "string",
-                    "description": "Custom MultiQC yaml file containing HTML including a methods description."
+                    "description": "Custom MultiQC yaml file containing HTML including a methods description.",
+                    "default": null
                 },
                 "multiqc_title": {
                     "type": "string",
-                    "description": "MultiQC report title. Printed as page header, used for filename if not otherwise specified."
+                    "description": "MultiQC report title. Printed as page header, used for filename if not otherwise specified.",
+                    "default": null
                 }
             }
         },
@@ -252,7 +258,8 @@
                 },
                 "skip_ngs_bits": {
                     "type": "boolean",
-                    "description": "Skip ngs bits alignment QC."
+                    "description": "Skip ngs bits alignment QC.",
+                    "default": false
                 },
                 "ngs_bits_skip_contamination": {
                     "type": "boolean",

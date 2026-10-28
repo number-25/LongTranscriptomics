@@ -8,24 +8,38 @@ process NANOQ {
         : 'biocontainers/nanoq:0.10.0--h031d066_2'}"
 
     input:
-    tuple val(meta), path(fastq)
+    //tuple val(meta), path(fastq)
+    record(
+        meta: String,
+        fastq: Path
+    )
 
     output:
-    //val(output_format) //One of the following: fastq, fastq.gz, fastq.bz2, fastq.lzma, fasta, fasta.gz, fasta.bz2, fasta.lzma.
-    tuple val(meta), path("*_stats.txt"), emit: stats
-    tuple val(meta), path("*_stats_verbose.txt"), emit: verbose_stats
-    tuple val(meta), path("*.json"), emit: json_stats
-    //tuple val(meta), path("*_filtered.${output_format}")                              , emit: reads
-    path "versions.yml", emit: versions
+    //One of the following: fastq, fastq.gz, fastq.bz2, fastq.lzma, fasta, fasta.gz, fasta.bz2, fasta.lzma.
+    record(
+        meta: String,
+        stats: file("*_stats.txt")
+    )
+    record
+        meta: String,
+        verbose_stats: file("*_stats_verbose.txt")
+    )
+    record(
+        meta: String,
+        json_stats: file("*.json")
+    )
+
+    file("versions.yml", emit: versions
+
+    //tuple val(meta), path("*_stats.txt"), emit: stats
+    //tuple val(meta), path("*_stats_verbose.txt"), emit: verbose_stats
+    //tuple val(meta), path("*.json"), emit: json_stats
 
     when:
     task.ext.when == null || task.ext.when
 
     script:
     def prefix = task.ext.prefix ?: "${meta.id}_${meta.replicate}_nanoq" // get the sample ID from the meta mapping
-    //if ( "${meta.replicate}" ?: '' )
-    //    def prefix = task.ext.prefix ?: "${meta.id}_nanoq" // get the sample ID from the meta mapping
-    //else
     """
     nanoq \\
         -s \\
