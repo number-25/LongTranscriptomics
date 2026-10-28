@@ -13,43 +13,61 @@
             "properties": {
                 "genome_fasta": {
                     "type": "string",
-                    "description": "Path to reference genome fasta."
+                    "format": "file-path",
+                    "description": "Path to reference genome fasta.",
+                    "default": null
                 },
                 "genome_fasta_index": {
                     "type": "string",
-                    "description": "Path to reference genome index."
+                    "format": "file-path",
+                    "description": "Path to reference genome index.",
+                    "default": null
                 },
                 "genome_fasta_sizes": {
                     "type": "string",
-                    "description": "Path to reference genome sizes."
+                    "format": "file-path",
+                    "description": "Path to reference genome sizes.",
+                    "default": null
                 },
                 "genome_minimap2_index": {
                     "type": "string",
-                    "description": "Path to reference genome minimap2 index."
+                    "format": "file-path",
+                    "description": "Path to reference genome minimap2 index.",
+                    "default": null
                 },
                 "transcriptome_mapping": {
                     "type": "boolean",
-                    "description": "Map to reference transcriptome instead of genome."
+                    "description": "Map to reference transcriptome instead of genome.",
+                    "default": false
                 },
                 "transcriptome_fasta": {
                     "type": "string",
-                    "description": "Path to transcriptome fasta sequence."
+                    "format": "file-path",
+                    "description": "Path to transcriptome fasta sequence.",
+                    "default": null
                 },
                 "transcriptome_fasta_index": {
                     "type": "string",
-                    "description": "Path to transcriptome fasta index."
+                    "format": "file-path",
+                    "description": "Path to transcriptome fasta index.",
+                    "default": null
                 },
                 "transcriptome_minimap2_index": {
                     "type": "string",
-                    "description": "Path to transcriptome minimap2 index."
+                    "format": "file-path",
+                    "description": "Path to transcriptome minimap2 index.",
+                    "default": null
                 },
                 "annotation_gtf": {
                     "type": "string",
-                    "description": "Path to reference transcriptome annotation."
+                    "format": "file-path",
+                    "description": "Path to reference transcriptome annotation.",
+                    "default": null
                 },
                 "skip_prepare_reference": {
                     "type": "boolean",
-                    "description": "Skip the preparation of the reference files."
+                    "description": "Skip the preparation of the reference files.",
+                    "default": false
                 }
             },
             "required": ["genome_fasta", "transcriptome_fasta", "annotation_gtf"],
@@ -195,6 +213,7 @@
             "properties": {
                 "bam_input": {
                     "type": "boolean",
+                    "default": false,
                     "description": "Input files are prealigned in BAM format."
                 },
                 "skip_qc": {
@@ -246,11 +265,13 @@
                 },
                 "skip_mapping": {
                     "type": "boolean",
-                    "description": "Skip mapping to reference genome."
+                    "description": "Skip mapping to reference genome.",
+                    "default": false
                 },
                 "skip_bam_to_bigwig": {
                     "type": "boolean",
-                    "description": "Skip creation of bigWig alignment files for viewing in genome browsers."
+                    "description": "Skip creation of bigWig alignment files for viewing in genome browsers.",
+                    "default": false
                 },
                 "skip_flair": {
                     "type": "boolean",

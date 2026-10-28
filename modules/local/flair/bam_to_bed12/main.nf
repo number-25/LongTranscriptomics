@@ -11,8 +11,8 @@ process BAM_TO_BED12 {
     path mapped_bam_index
 
     output:
-    //tuple val(meta), path(mapped_bam_index)
-    path("*.bed"), emit: bed
+    tuple val(meta), path("*.bed"), emit: bed
+    //path("*.bed"), emit: bed
     path "versions.yml", emit: versions
 
     when:
