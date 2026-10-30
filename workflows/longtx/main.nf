@@ -117,32 +117,12 @@ workflow LONGTX {
     ch_sample = channel.fromList(samplesheetToList(params.input, "assets/schema_input.json"))
             //.view()
 
-//  if (params.input) {
-       // ch_input = file(params.input)
-                // defined in nextflow.config
-    //} else {
-    //    exit 1, 'Input samplesheet not specified!'
-    //}
-
     // genome fasta
-    //if (params.genome_fasta) {
         ch_genome_fasta = channel.fromPath(params.genome_fasta, checkIfExists: true)
-    //} else {
-    //    exit 1, 'Reference genome fasta file is not specified! please modify nextflow.config or use --genome_fasta parameter'
-    //}
 
     // transcriptome
-    //if (params.annotation_gtf) {
         ch_annotation_gtf = channel.fromPath(params.annotation_gtf, checkIfExists: true) // check if exists
-    //} else {
-    //    exit 1, 'Reference transcriptome annotation file is not specified! please modify nextflow.config or use --annotation_gtf parameter'
-    //}
-
-    //if (params.transcriptome_fasta) {
         ch_transcriptome_fasta = channel.fromPath(params.transcriptome_fasta, checkIfExists: true) // check if exists
-    //} else {
-    //    exit 1, 'Reference transcriptome fasta file is not specified! please modify nextflow.config or use --transcriptome_fasta parameter'
-    //}
 
     if (params.skip_prepare_reference){
         ch_genome_minimap2_index        = channel.fromPath(params.genome_minimap2_index, checkIfExists: true)
@@ -150,15 +130,10 @@ workflow LONGTX {
         ch_genome_fasta_index           = channel.fromPath(params.genome_fasta_index, checkIfExists: true)
         ch_genome_sizes                 = channel.fromPath(params.genome_fasta_sizes, checkIfExists: true)
     }
-//}
 
     ch_versions = channel.empty()
     ch_multiqc_files = channel.empty()
     //def multiqc_report      = []
-
-    // INPUT_CHECK
-    //INPUT_CHECK ( ch_input )
-    //    .set { ch_sample }
 
     //ch_sample = ch_sample.view()
 

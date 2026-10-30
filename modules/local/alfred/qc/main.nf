@@ -12,9 +12,21 @@ process ALFRED {
     tuple val(meta), path(bam)
     path genome_fasta
 
+    record(
+        meta: Map,
+        bam: Path
+    )
+    genome_fasta: Path
+
     output:
-    tuple val(meta), path("*.tsv.gz"), emit: alfred_stats
-    path "versions.yml", emit: versions
+    record(
+        meta: meta,
+        alfred_stats: file("*.tsv.gz"),
+        versions: file("versions.yml")
+    )
+
+    //tuple val(meta), path("*.tsv.gz"), emit: alfred_stats
+    //path "versions.yml", emit: versions
 
     when:
     task.ext.when == null || task.ext.when

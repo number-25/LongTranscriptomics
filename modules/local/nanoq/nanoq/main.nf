@@ -1,7 +1,8 @@
+nextflow.enable.types = true
+
 process NANOQ {
     tag "${meta.id}"
     label 'process_low'
-
     conda "${moduleDir}/environment.yml"
     container "${workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container
         ? 'https://depot.galaxyproject.org/singularity/nanoq:0.10.0--h031d066_2'
@@ -10,36 +11,31 @@ process NANOQ {
     input:
     //tuple val(meta), path(fastq)
     record(
-        meta: String,
+        meta: Map,
         fastq: Path
     )
 
     output:
     //One of the following: fastq, fastq.gz, fastq.bz2, fastq.lzma, fasta, fasta.gz, fasta.bz2, fasta.lzma.
     record(
-        meta: String,
-        stats: file("*_stats.txt")
-    )
-    record
-        meta: String,
-        verbose_stats: file("*_stats_verbose.txt")
-    )
-    record(
-        meta: String,
-        json_stats: file("*.json")
+        meta: Map,
+        stats: file("*_stats.txt"),
+        verbose_stats: file("*_stats_verbose.txt"),
+        json_stats: file("*.json"),
+        versions: file("versions.yml")
     )
 
-    file("versions.yml", emit: versions
+    //file("versions.yml", emit: versions
 
     //tuple val(meta), path("*_stats.txt"), emit: stats
     //tuple val(meta), path("*_stats_verbose.txt"), emit: verbose_stats
     //tuple val(meta), path("*.json"), emit: json_stats
 
-    when:
-    task.ext.when == null || task.ext.when
+    //when:
+    //task.ext.when == null || task.ext.when
 
     script:
-    def prefix = task.ext.prefix ?: "${meta.id}_${meta.replicate}_nanoq" // get the sample ID from the meta mapping
+    def prefix = task.ext.prefix ?: "${meta.id}_${meta.replicate}_nanoq"
     """
     nanoq \\
         -s \\
