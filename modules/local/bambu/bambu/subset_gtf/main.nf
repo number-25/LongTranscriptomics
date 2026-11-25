@@ -1,3 +1,5 @@
+nextflow.enable.types = true
+
 process SUBSET_BAMBU_GTF {
     //tag "${meta.id}"
     label 'process_single'
@@ -7,15 +9,23 @@ process SUBSET_BAMBU_GTF {
         : 'quay.io/number_25/alpine-plus-plus-plus:3.21.0'}"
 
     input:
-    tuple val(meta), path(extended_gtf)
-    path transcript_counts
+    //tuple val(meta), path(extended_gtf)
+    //path transcript_counts
+
+    tuple(meta: Map, extended_gtf: Path)
+    transcript_counts: Path
 
     output:
-    tuple val(meta), path("subset_annotations.gtf"),    emit: subset_gtf
-    path "versions.yml",                                emit: versions
+    //tuple val(meta), path("subset_annotations.gtf"),    emit: subset_gtf
+    //path "versions.yml",                                emit: versions
 
-    when:
-    task.ext.when == null || task.ext.when
+    record(
+        subset_gtf: tuple(meta, file("subset_annotations.gtf")),
+        versions: file("versions.yml")
+    )
+
+    //when:
+    //task.ext.when == null || task.ext.when
 
     script:
     """

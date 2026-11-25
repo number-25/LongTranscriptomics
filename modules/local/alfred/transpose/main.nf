@@ -1,3 +1,5 @@
+nextflow.enable.types = true
+
 process TRANSPOSE {
     tag "${meta.id}"
     label 'process_single'
@@ -7,14 +9,25 @@ process TRANSPOSE {
         : 'quay.io/number_25/alpine-plus-plus-plus:3.21.0'}"
 
     input:
-    tuple val(meta), path(alfred_stats)
+    //tuple val(meta), path(alfred_stats)
+
+    record(
+        meta: Map,
+        alfred_stats: Path
+    )
 
     output:
-    tuple val(meta), path("*.transposed.stats"), emit: alfred_stats_transposed
-    path "versions.yml", emit: versions
+    //tuple val(meta), path("*.transposed.stats"), emit: alfred_stats_transposed
+    //path "versions.yml", emit: versions
 
-    when:
-    task.ext.when == null || task.ext.when
+    record(
+        meta: meta,
+        alfred_stats_transposed: file("*.transposed.stats"),
+        versions: file("versions.yml")
+    )
+
+    //when:
+    //task.ext.when == null || task.ext.when
 
     script:
     def prefix = task.ext.prefix ?: "${meta.id}_${meta.replicate}_alfred"

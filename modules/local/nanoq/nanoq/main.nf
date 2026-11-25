@@ -10,22 +10,16 @@ process NANOQ {
 
     input:
     //tuple val(meta), path(fastq)
-    record(
-        meta: Map,
-        fastq: Path
-    )
+    tuple(meta: Map, fastq: Path)
 
     output:
     //One of the following: fastq, fastq.gz, fastq.bz2, fastq.lzma, fasta, fasta.gz, fasta.bz2, fasta.lzma.
     record(
-        meta: Map,
-        stats: file("*_stats.txt"),
-        verbose_stats: file("*_stats_verbose.txt"),
-        json_stats: file("*.json"),
+        stats: tuple(meta, file("*_stats.txt")),
+        verbose_stats: tuple(meta, file("*_stats_verbose.txt")),
+        json_stats: tuple(meta, file("*.json")),
         versions: file("versions.yml")
     )
-
-    //file("versions.yml", emit: versions
 
     //tuple val(meta), path("*_stats.txt"), emit: stats
     //tuple val(meta), path("*_stats_verbose.txt"), emit: verbose_stats

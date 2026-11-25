@@ -1,3 +1,4 @@
+nextflow.enable.types = true
 process BAMBU {
     tag "${meta.id}"
     label 'process_medium'
@@ -7,18 +8,35 @@ process BAMBU {
         : 'quay.io/number_25/bambu:3.12.0'}"
 
     input:
-    path genome_fasta
-    path annotation_gtf
-    tuple val(meta), path(bam)
+    //path genome_fasta
+    //path annotation_gtf
+    //tuple val(meta), path(bam)
+
+    genome_fasta: Path
+    annotation_gtf: Path
+    tuple(meta: Map, bam: Path)
 
     output:
-    path "counts_gene.txt",                             emit: gene_counts
-    path "counts_transcript.txt",                       emit: transcript_counts
-    tuple val(meta), path("extended_annotations.gtf"),  emit: extended_gtf
-    path "versions.yml",                                emit: versions
+    //path "counts_gene.txt",                             emit: gene_counts
+    //path "counts_transcript.txt",                       emit: transcript_counts
+    //tuple val(meta), path("extended_annotations.gtf"),  emit: extended_gtf
+    //path "versions.yml",                                emit: versions
 
-    when:
-    task.ext.when == null || task.ext.when
+    record(
+    gene_counts: file("counts_gene.txt"),
+    transcript_counts: file("counts_transcript.txt"),
+    extended_gtf: tuple(meta, file("extended_annotations.gtf")),
+    versions: file("versions.yml")
+    )
+
+    //record(
+    //    gene_counts: file("counts_gene.txt"),
+    //    transcript_counts: file("counts_transcript.txt"),
+    //    met
+    //    tuple val(meta), path("extended_annotations.gtf"),  emit: extended_gtf
+
+    //when:
+    //task.ext.when == null || task.ext.when
 
     script:
     """

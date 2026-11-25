@@ -1,3 +1,4 @@
+nextflow.enable.types = true
 process ALFRED {
     tag "${meta.id}"
     label 'process_low'
@@ -6,11 +7,10 @@ process ALFRED {
         ? 'https://depot.galaxyproject.org/singularity/alfred:0.3.2--hf9970c3_0'
         : 'biocontainers/alfred:0.3.2--hf9970c3_0'}"
 
+
     input:
-    // Where applicable please provide/convert compressed files as input/output
-    //               e.g. "*.fastq.gz" and NOT "*.fastq", "*.bam" and NOT "*.sam" etc.
-    tuple val(meta), path(bam)
-    path genome_fasta
+    //tuple val(meta), path(bam)
+    //path genome_fasta
 
     record(
         meta: Map,
@@ -28,8 +28,8 @@ process ALFRED {
     //tuple val(meta), path("*.tsv.gz"), emit: alfred_stats
     //path "versions.yml", emit: versions
 
-    when:
-    task.ext.when == null || task.ext.when
+    //when:
+    //task.ext.when == null || task.ext.when
 
     script:
     def prefix = task.ext.prefix ?: "${meta.id}_${meta.replicate}_alfred"
